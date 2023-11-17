@@ -10,7 +10,7 @@ public static class HttpClientExtensions
 
     public delegate void OnError(int statusCode);
 
-    public static async Task<TResponse?> GetJsonAsync<TResponse>(this HttpClient client, string requestUri, OnError? onErrorCallback = null)
+    public static async Task<TResponse?> GetJsonAsync<TResponse>(this System.Net.Http.HttpClient client, string requestUri, OnError? onErrorCallback = null)
     {
         try
         {
@@ -35,7 +35,7 @@ public static class HttpClientExtensions
         }
     }
 
-    public static async Task<TResponse?> PostJsonAsync<TPost, TResponse>(this HttpClient client, string requestUri, TPost param, OnError? onErrorCallback = null)
+    public static async Task<TResponse?> PostJsonAsync<TPost, TResponse>(this System.Net.Http.HttpClient client, string requestUri, TPost param, OnError? onErrorCallback = null)
     {
         try
         {
@@ -62,7 +62,7 @@ public static class HttpClientExtensions
         }
     }
 
-    public static async Task<TResponse?> PatchJsonAsync<TPatch, TResponse>(this HttpClient client, string requestUri, TPatch param, OnError? onErrorCallback = null)
+    public static async Task<TResponse?> PatchJsonAsync<TPatch, TResponse>(this System.Net.Http.HttpClient client, string requestUri, TPatch param, OnError? onErrorCallback = null)
     {
         try
         {
@@ -89,7 +89,7 @@ public static class HttpClientExtensions
         }
     }
 
-    public static async Task<bool> DeleteAsyncX(this HttpClient client, string requestUri, OnError? onErrorCallback = null)
+    public static async Task<bool> DeleteAsyncX(this System.Net.Http.HttpClient client, string requestUri, OnError? onErrorCallback = null)
     {
         try
         {
