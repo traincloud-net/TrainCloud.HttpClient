@@ -1,4 +1,4 @@
-﻿using System.Net.Http.Headers;
+﻿using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
 
@@ -8,20 +8,15 @@ public static class HttpClientExtensions
 {
     private static JsonSerializerOptions TrainCloudJsonSerializerOptions { get; set; } = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
 
-    public delegate void OnError(int statusCode);
+    //public delegate void OnError(HttpStatusCode statusCode);
 
-    public static void AuthorizeClient(this System.Net.Http.HttpClient client, string token)
-    {
-        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-    }
-
-    private static async Task<TResponse?> ProcessResponseAsync<TResponse>(HttpResponseMessage response, OnError? onErrorCallback = null)
+    private static async Task<TResponse?> ProcessResponseAsync<TResponse>(HttpResponseMessage response, Action<HttpStatusCode>? errorAction)
     {
         if (!response.IsSuccessStatusCode)
         {
-            if (onErrorCallback is not null)
+            if (errorAction is not null)
             {
-                onErrorCallback((int)response.StatusCode);
+                errorAction(response.StatusCode);
             }
             return default;
         }
@@ -33,28 +28,28 @@ public static class HttpClientExtensions
         return model;
     }
 
-    public static async Task<TResponse?> GetRequestAsync<TResponse>(this System.Net.Http.HttpClient client, string requestUri, OnError? onErrorCallback = null)
+    public static async Task<TResponse?> GetRequestAsync<TResponse>(this System.Net.Http.HttpClient client, string requestUri, Action<HttpStatusCode>? errorAction)
     {
         try
         {
             using HttpResponseMessage response = await client.GetAsync(requestUri);
 
-            TResponse? model = await ProcessResponseAsync<TResponse>(response, onErrorCallback);
+            TResponse? model = await ProcessResponseAsync<TResponse>(response, errorAction);
 
             return model;
         }
         catch
         {
-            if (onErrorCallback is not null)
+            if (errorAction is not null)
             {
-                onErrorCallback(500);
+                errorAction(HttpStatusCode.InternalServerError);
             }
 
             return default;
         }
     }
 
-    public static async Task<TResponse?> PostRequestAsync<TPost, TResponse>(this System.Net.Http.HttpClient client, string requestUri, TPost param, OnError? onErrorCallback = null)
+    public static async Task<TResponse?> PostRequestAsync<TPost, TResponse>(this System.Net.Http.HttpClient client, string requestUri, TPost param, Action<HttpStatusCode>? errorAction)
     {
         try
         {
@@ -62,22 +57,22 @@ public static class HttpClientExtensions
 
             using HttpResponseMessage response = await client.PostAsync(requestUri, parameterContent);
 
-            TResponse? model = await ProcessResponseAsync<TResponse>(response, onErrorCallback);
+            TResponse? model = await ProcessResponseAsync<TResponse>(response, errorAction);
 
             return model;
         }
         catch
         {
-            if (onErrorCallback is not null)
+            if (errorAction is not null)
             {
-                onErrorCallback(500);
+                errorAction(HttpStatusCode.InternalServerError);
             }
 
             return default;
         }
     }
 
-    public static async Task<TResponse?> PatchRequestAsync<TPatch, TResponse>(this System.Net.Http.HttpClient client, string requestUri, TPatch param, OnError? onErrorCallback = null)
+    public static async Task<TResponse?> PatchRequestAsync<TPatch, TResponse>(this System.Net.Http.HttpClient client, string requestUri, TPatch param, Action<HttpStatusCode>? errorAction)
     {
         try
         {
@@ -85,31 +80,31 @@ public static class HttpClientExtensions
 
             using HttpResponseMessage response = await client.PatchAsync(requestUri, parameterContent);
 
-            TResponse? model = await ProcessResponseAsync<TResponse>(response, onErrorCallback);
+            TResponse? model = await ProcessResponseAsync<TResponse>(response, errorAction);
 
             return model;
         }
         catch
         {
-            if (onErrorCallback is not null)
+            if (onError is not null)
             {
-                onErrorCallback(500);
+                onError(HttpStatusCode.InternalServerError);
             }
 
             return default;
         }
     }
 
-    public static async Task<bool> DeleteRequestAsync(this System.Net.Http.HttpClient client, string requestUri, OnError? onErrorCallback = null)
+    public static async Task<bool> DeleteRequestAsync(this System.Net.Http.HttpClient client, string requestUri, Action<HttpStatusCode>? errorAction)
     {
         try
         {
             using HttpResponseMessage response = await client.DeleteAsync(requestUri);
             if (!response.IsSuccessStatusCode)
             {
-                if (onErrorCallback is not null)
+                if (errorAction is not null)
                 {
-                    onErrorCallback((int)response.StatusCode);
+                    errorAction(response.StatusCode);
                 }
                 return false;
             }
@@ -118,9 +113,9 @@ public static class HttpClientExtensions
         }
         catch
         {
-            if (onErrorCallback is not null)
+            if (errorAction is not null)
             {
-                onErrorCallback(500);
+                errorAction(HttpStatusCode.InternalServerError);
             }
 
             return default;
