@@ -86,9 +86,9 @@ public static class HttpClientExtensions
         }
         catch
         {
-            if (onError is not null)
+            if (errorAction is not null)
             {
-                onError(HttpStatusCode.InternalServerError);
+                errorAction(HttpStatusCode.InternalServerError);
             }
 
             return default;
