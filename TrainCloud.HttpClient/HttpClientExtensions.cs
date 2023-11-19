@@ -8,9 +8,7 @@ public static class HttpClientExtensions
 {
     private static JsonSerializerOptions TrainCloudJsonSerializerOptions { get; set; } = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
 
-    //public delegate void OnError(HttpStatusCode statusCode);
-
-    private static async Task<TResponse?> ProcessResponseAsync<TResponse>(HttpResponseMessage response, Action<HttpStatusCode>? errorAction)
+    private static async Task<TResponse?> ProcessResponseAsync<TResponse>(HttpResponseMessage response, Action<HttpStatusCode>? errorAction = null)
     {
         if (!response.IsSuccessStatusCode)
         {
@@ -28,7 +26,9 @@ public static class HttpClientExtensions
         return model;
     }
 
-    public static async Task<TResponse?> GetRequestAsync<TResponse>(this System.Net.Http.HttpClient client, string requestUri, Action<HttpStatusCode>? errorAction)
+    public static async Task<TResponse?> GetRequestAsync<TResponse>(this System.Net.Http.HttpClient client, 
+                                                                    string requestUri, 
+                                                                    Action<HttpStatusCode>? errorAction = null)
     {
         try
         {
@@ -49,7 +49,10 @@ public static class HttpClientExtensions
         }
     }
 
-    public static async Task<TResponse?> PostRequestAsync<TPost, TResponse>(this System.Net.Http.HttpClient client, string requestUri, TPost param, Action<HttpStatusCode>? errorAction)
+    public static async Task<TResponse?> PostRequestAsync<TPost, TResponse>(this System.Net.Http.HttpClient client, 
+                                                                            string requestUri, 
+                                                                            TPost param, 
+                                                                            Action<HttpStatusCode>? errorAction = null)
     {
         try
         {
@@ -72,7 +75,10 @@ public static class HttpClientExtensions
         }
     }
 
-    public static async Task<TResponse?> PatchRequestAsync<TPatch, TResponse>(this System.Net.Http.HttpClient client, string requestUri, TPatch param, Action<HttpStatusCode>? errorAction)
+    public static async Task<TResponse?> PatchRequestAsync<TPatch, TResponse>(this System.Net.Http.HttpClient client, 
+                                                                              string requestUri, 
+                                                                              TPatch param, 
+                                                                              Action<HttpStatusCode>? errorAction = null)
     {
         try
         {
@@ -95,7 +101,9 @@ public static class HttpClientExtensions
         }
     }
 
-    public static async Task<bool> DeleteRequestAsync(this System.Net.Http.HttpClient client, string requestUri, Action<HttpStatusCode>? errorAction)
+    public static async Task<bool> DeleteRequestAsync(this System.Net.Http.HttpClient client, 
+                                                      string requestUri, 
+                                                      Action<HttpStatusCode>? errorAction = null)
     {
         try
         {
