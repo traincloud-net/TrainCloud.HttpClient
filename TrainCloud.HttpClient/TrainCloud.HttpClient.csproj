@@ -5,6 +5,10 @@
 				<ImplicitUsings>enable</ImplicitUsings>
 				<Nullable>enable</Nullable>
 		</PropertyGroup>
+
+		<ItemGroup>
+				<InternalsVisibleTo Include="TrainCloud.Tests.HttpClient" />
+		</ItemGroup>
 		
 		<PropertyGroup>
 				<NoWarn>$(NoWarn);NU1701</NoWarn>

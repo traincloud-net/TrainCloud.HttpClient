@@ -32,7 +32,7 @@ public static class HttpClientExtensions
             return default;
         }
 
-        MemoryStream contentStream = (MemoryStream)await response.Content.ReadAsStreamAsync();
+        Stream contentStream = await response.Content.ReadAsStreamAsync();
 
         TResponse? model = await JsonSerializer.DeserializeAsync<TResponse>(contentStream, TrainCloudJsonSerializerOptions);
 
@@ -153,6 +153,47 @@ public static class HttpClientExtensions
             return default;
         }
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="TPut"></typeparam>
+    /// <typeparam name="TResponse"></typeparam>
+    /// <param name="client"></param>
+    /// <param name="requestUri"></param>
+    /// <param name="param"></param>
+    /// <param name="httpStatusAction"></param>
+    /// <returns></returns>
+    public static async Task<TResponse?> PutRequestAsync<TPut, TResponse>(this System.Net.Http.HttpClient client,
+                                                                          string requestUri,
+                                                                          TPut param,
+                                                                          Action<HttpStatusCode>? httpStatusAction = null)
+    {
+        try
+        {
+            HttpContent parameterContent = JsonContent.Create(param, typeof(TPut));
+
+            using HttpResponseMessage response = await client.PutAsync(requestUri, parameterContent);
+            if (httpStatusAction is not null)
+            {
+                httpStatusAction(response.StatusCode);
+            }
+
+            TResponse? model = await ProcessResponseAsync<TResponse>(response, httpStatusAction);
+
+            return model;
+        }
+        catch
+        {
+            if (httpStatusAction is not null)
+            {
+                httpStatusAction(HttpStatusCode.InternalServerError);
+            }
+
+            return default;
+        }
+    }
+
 
     /// <summary>
     /// 
