@@ -55,21 +55,17 @@ public static class HttpClientExtensions
         {
             using HttpResponseMessage response = await client.GetAsync(requestUri);
 
-            TResponse? model = await ProcessResponseAsync<TResponse>(response, httpStatusAction);
             if (httpStatusAction is not null)
             {
                 httpStatusAction(response.StatusCode);
             }
 
+            TResponse? model = await ProcessResponseAsync<TResponse>(response, httpStatusAction);
+
             return model;
         }
         catch
         {
-            if (httpStatusAction is not null)
-            {
-                httpStatusAction(HttpStatusCode.InternalServerError);
-            }
-
             return default;
         }
     }
@@ -94,6 +90,7 @@ public static class HttpClientExtensions
             HttpContent parameterContent = JsonContent.Create(param, typeof(TPost));
 
             using HttpResponseMessage response = await client.PostAsync(requestUri, parameterContent);
+
             if (httpStatusAction is not null)
             {
                 httpStatusAction(response.StatusCode);
@@ -105,11 +102,6 @@ public static class HttpClientExtensions
         }
         catch
         {
-            if (httpStatusAction is not null)
-            {
-                httpStatusAction(HttpStatusCode.InternalServerError);
-            }
-
             return default;
         }
     }
@@ -134,6 +126,7 @@ public static class HttpClientExtensions
             HttpContent parameterContent = JsonContent.Create(param, typeof(TPatch));
 
             using HttpResponseMessage response = await client.PatchAsync(requestUri, parameterContent);
+
             if (httpStatusAction is not null)
             {
                 httpStatusAction(response.StatusCode);
@@ -145,11 +138,6 @@ public static class HttpClientExtensions
         }
         catch
         {
-            if (httpStatusAction is not null)
-            {
-                httpStatusAction(HttpStatusCode.InternalServerError);
-            }
-
             return default;
         }
     }
@@ -174,6 +162,7 @@ public static class HttpClientExtensions
             HttpContent parameterContent = JsonContent.Create(param, typeof(TPut));
 
             using HttpResponseMessage response = await client.PutAsync(requestUri, parameterContent);
+
             if (httpStatusAction is not null)
             {
                 httpStatusAction(response.StatusCode);
@@ -185,11 +174,6 @@ public static class HttpClientExtensions
         }
         catch
         {
-            if (httpStatusAction is not null)
-            {
-                httpStatusAction(HttpStatusCode.InternalServerError);
-            }
-
             return default;
         }
     }
@@ -209,25 +193,16 @@ public static class HttpClientExtensions
         try
         {
             using HttpResponseMessage response = await client.DeleteAsync(requestUri);
+
             if (httpStatusAction is not null)
             {
                 httpStatusAction(response.StatusCode);
             }
 
-            if (!response.IsSuccessStatusCode)
-            {
-                return false;
-            }
-
-            return true;
+            return response.IsSuccessStatusCode;
         }
         catch
         {
-            if (httpStatusAction is not null)
-            {
-                httpStatusAction(HttpStatusCode.InternalServerError);
-            }
-
             return default;
         }
     }
