@@ -15,7 +15,7 @@
 				<PackageReference Include="MSTest.TestFramework" Version="3.1.1" />
 				<PackageReference Include="coverlet.collector" Version="6.0.0" />
 				<PackageReference Include="TrainCloud.Models" Version="0.0.4" />
-				<PackageReference Include="TrainCloud.Tests.Microservices.Core" Version="0.0.2" />
+				<PackageReference Include="TrainCloud.Tests.Microservices.Core" Version="0.0.5" />
 		</ItemGroup>
 
 		<ItemGroup>
