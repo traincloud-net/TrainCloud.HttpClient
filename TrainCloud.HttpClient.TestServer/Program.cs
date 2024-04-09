@@ -1,28 +1,35 @@
-var builder = WebApplication.CreateBuilder(args);
+using Microsoft.AspNetCore.Builder;
+using TrainCloud.Microservices.Core.Extensions.Authentication;
+using TrainCloud.Microservices.Core.Extensions.Authorization;
+using TrainCloud.Microservices.Core.Extensions.Swagger;
+using TrainCloud.Uic;
+
+var webApplicationBuilder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
-var app = builder.Build();
+webApplicationBuilder.Services.AddTrainCloudAuthorization();
+AuthenticationOptions authenticationOptions = webApplicationBuilder.Configuration.GetSection(AuthenticationOptions.Position).Get<AuthenticationOptions>()!;
+webApplicationBuilder.Services.AddTrainCloudAuthentication(authenticationOptions);
+
+webApplicationBuilder.Services.AddControllers();
+
+SwaggerOptions swaggerOptions = webApplicationBuilder.Configuration.GetSection(SwaggerOptions.Position).Get<SwaggerOptions>()!;
+webApplicationBuilder.Services.AddTrainCloudSwagger(swaggerOptions);
+
+webApplicationBuilder.Services.AddTransient<IUicNumberService, UicNumberService>();
+
+var webApplication = webApplicationBuilder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
 
-app.UseHttpsRedirection();
+webApplication.UseTrainCloudSwagger();
+webApplication.UseAuthorization();
 
-app.UseAuthorization();
+webApplication.MapControllers();
 
-app.MapControllers();
-
-app.Run();
+webApplication.Run();
 
 /// <summary>
 /// The class definition is required to make this service testable

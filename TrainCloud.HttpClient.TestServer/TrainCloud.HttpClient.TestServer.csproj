@@ -16,6 +16,7 @@
 				<PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.5.0" />
 				<PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="8.0.1" />
 				<PackageReference Include="TrainCloud.Microservices.Core" Version="0.0.38" />
+				<PackageReference Include="TrainCloud.Uic" Version="1.0.0" />
 		</ItemGroup>
 
 </Project>

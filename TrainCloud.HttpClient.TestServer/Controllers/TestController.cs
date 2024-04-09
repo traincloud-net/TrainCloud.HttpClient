@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using TrainCloud.HttpClient.TestServer.Models;
 using TrainCloud.Microservices.Core.Controllers;
 
 namespace TrainCloud.HttpClient.TestServer.Controllers;
@@ -18,43 +19,99 @@ public class TestController : AbstractController<TestController>
 
     }
 
-
-    [HttpGet("Get")]
-    [Authorize()]
+    [HttpGet("Get/{id}")]
+    [Authorize]
     [Consumes("application/json")]
     [Produces("application/json")]
-    [SwaggerResponse(StatusCodes.Status200OK, type: typeof(object))]
+    [SwaggerResponse(StatusCodes.Status200OK, type: typeof(ResponseModel))]
     [SwaggerResponse(StatusCodes.Status400BadRequest)]
     [SwaggerResponse(StatusCodes.Status401Unauthorized)]
     [SwaggerResponse(StatusCodes.Status403Forbidden)]
+    [SwaggerResponse(StatusCodes.Status404NotFound)]
     [SwaggerResponse(StatusCodes.Status409Conflict)]
     [SwaggerResponse(StatusCodes.Status500InternalServerError)]
-    public IActionResult Get()
+    public IActionResult Get([FromRoute] Guid id)
     {
-       return  Ok();
+        var model = new ResponseModel()
+        {
+            CurrentUserId = CurrentUserId
+        };
+
+       return  Ok(model);
     }
 
-    [HttpPost()]
-    public IActionResult Post()
+    [HttpPost("Post")]
+    [Authorize]
+    [Consumes("application/json")]
+    [Produces("application/json")]
+    [SwaggerResponse(StatusCodes.Status201Created, type: typeof(ResponseModel))]
+    [SwaggerResponse(StatusCodes.Status400BadRequest)]
+    [SwaggerResponse(StatusCodes.Status401Unauthorized)]
+    [SwaggerResponse(StatusCodes.Status403Forbidden)]
+    [SwaggerResponse(StatusCodes.Status404NotFound)]
+    [SwaggerResponse(StatusCodes.Status409Conflict)]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError)]
+    public IActionResult Post([FromBody] PostModel postModel)
     {
-        return Ok();
+        var model = new ResponseModel()
+        {
+            CurrentUserId = CurrentUserId
+        };
+
+        return Created(model);
     }
 
-    [HttpPatch()]
-    public IActionResult Patch()
+    [HttpPatch("Patch/{id}")]
+    [Authorize]
+    [Consumes("application/json")]
+    [Produces("application/json")]
+    [SwaggerResponse(StatusCodes.Status200OK, type: typeof(ResponseModel))]
+    [SwaggerResponse(StatusCodes.Status400BadRequest)]
+    [SwaggerResponse(StatusCodes.Status401Unauthorized)]
+    [SwaggerResponse(StatusCodes.Status403Forbidden)]
+    [SwaggerResponse(StatusCodes.Status404NotFound)]
+    [SwaggerResponse(StatusCodes.Status409Conflict)]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError)]
+    public IActionResult Patch([FromRoute] Guid id, [FromBody] PatchModel patchModel)
     {
-        return Ok();
+        var model = new ResponseModel()
+        {
+            CurrentUserId = CurrentUserId
+        };
+
+        return Ok(model);
     }
 
-    [HttpPut()]
-    public IActionResult Put()
+    [HttpPut("Put/{id}")]
+    [Authorize]
+    [Consumes("application/json")]
+    [Produces("application/json")]
+    [SwaggerResponse(StatusCodes.Status200OK, type: typeof(ResponseModel))]
+    [SwaggerResponse(StatusCodes.Status400BadRequest)]
+    [SwaggerResponse(StatusCodes.Status401Unauthorized)]
+    [SwaggerResponse(StatusCodes.Status403Forbidden)]
+    [SwaggerResponse(StatusCodes.Status404NotFound)]
+    [SwaggerResponse(StatusCodes.Status409Conflict)]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError)]
+    public IActionResult Put([FromRoute] Guid id, [FromBody] PutModel putModel)
     {
-        return Ok();
+        var model = new ResponseModel()
+        {
+            CurrentUserId = CurrentUserId
+        };
+
+        return Ok(model);
     }
 
-    [HttpDelete()]
-    public IActionResult Delete()
+    [HttpDelete("Delete/{id}")]
+    [Authorize]
+    [SwaggerResponse(StatusCodes.Status204NoContent)]
+    [SwaggerResponse(StatusCodes.Status401Unauthorized)]
+    [SwaggerResponse(StatusCodes.Status403Forbidden)]
+    [SwaggerResponse(StatusCodes.Status404NotFound)]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError)]
+    public IActionResult Delete([FromRoute] Guid id)
     {
-        return Ok();
+        return NoContent();
     }
 }
