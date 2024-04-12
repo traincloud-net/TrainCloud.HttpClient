@@ -6,7 +6,10 @@ namespace TrainCloud.HttpClient;
 
 public static class HttpClientExtensions
 {
-    private static JsonSerializerOptions TrainCloudJsonSerializerOptions { get; set; } = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
+    private static JsonSerializerOptions TrainCloudJsonSerializerOptions { get; } = new() 
+    { 
+        PropertyNameCaseInsensitive = true
+    };
 
     private static async Task<TResponse?> ProcessResponseAsync<TResponse>(HttpResponseMessage response, Action<HttpStatusCode>? httpStatusAction = null)
     {
