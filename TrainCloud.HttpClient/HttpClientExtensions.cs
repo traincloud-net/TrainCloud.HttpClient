@@ -11,17 +11,8 @@ public static class HttpClientExtensions
         PropertyNameCaseInsensitive = true
     };
 
-    private static async Task<TResponse?> ProcessResponseAsync<TResponse>(HttpResponseMessage response, Action<HttpStatusCode>? httpStatusAction = null)
+    private static async Task<TResponse?> DeserializeResponseBodyAsync<TResponse>(HttpResponseMessage response)
     {
-        if (!response.IsSuccessStatusCode)
-        {
-            if (httpStatusAction is not null)
-            {
-                httpStatusAction(response.StatusCode);
-            }
-            return default;
-        }
-
         Stream contentStream = await response.Content.ReadAsStreamAsync();
 
         TResponse? model = await JsonSerializer.DeserializeAsync<TResponse>(contentStream, TrainCloudJsonSerializerOptions);
@@ -43,7 +34,12 @@ public static class HttpClientExtensions
                 httpStatusAction(response.StatusCode);
             }
 
-            TResponse? model = await ProcessResponseAsync<TResponse>(response, httpStatusAction);
+            if (!response.IsSuccessStatusCode)
+            {
+                return default;
+            }
+
+            TResponse? model = await DeserializeResponseBodyAsync<TResponse>(response);
 
             return model;
         }
@@ -75,7 +71,12 @@ public static class HttpClientExtensions
                 httpStatusAction(response.StatusCode);
             }
 
-            TResponse? model = await ProcessResponseAsync<TResponse>(response, httpStatusAction);
+            if(!response.IsSuccessStatusCode)
+            {
+                return default;
+            }
+
+            TResponse? model = await DeserializeResponseBodyAsync<TResponse>(response);
 
             return model;
         }
@@ -133,7 +134,12 @@ public static class HttpClientExtensions
                 httpStatusAction(response.StatusCode);
             }
 
-            TResponse? model = await ProcessResponseAsync<TResponse>(response, httpStatusAction);
+            if (!response.IsSuccessStatusCode)
+            {
+                return default;
+            }
+
+            TResponse? model = await DeserializeResponseBodyAsync<TResponse>(response);
 
             return model;
         }
@@ -191,7 +197,12 @@ public static class HttpClientExtensions
                 httpStatusAction(response.StatusCode);
             }
 
-            TResponse? model = await ProcessResponseAsync<TResponse>(response, httpStatusAction);
+            if (!response.IsSuccessStatusCode)
+            {
+                return default;
+            }
+
+            TResponse? model = await DeserializeResponseBodyAsync<TResponse>(response);
 
             return model;
         }
