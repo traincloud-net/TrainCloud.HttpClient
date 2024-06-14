@@ -78,6 +78,32 @@ public static class HttpClientExtensions
     }
 
     /// <summary>
+    /// GETSs the ressource in requestUri and returns it as string
+    /// </summary>
+    /// <param name="client">Provides a class for sending HTTP requests and receiving HTTP responses from a resource identified by a URI.</param>
+    /// <param name="requestUri">The Uri of the ressource to work with.</param>
+    /// <param name="onHttpStatus">An action, which is raised after completing the request. Contains the actual Http Status code</param>
+    /// <param name="onException">An action, which is raised after an exception occurrs</param>
+    /// <returns>The response as string</returns>
+    public static async Task<string?> GetAsStringRequestAsync(this System.Net.Http.HttpClient client,
+                                                              string requestUri,
+                                                              Action<HttpStatusCode>? onHttpStatus = null,
+                                                              Action<Exception>? onException = null)
+    {
+        using HttpResponseMessage httpResponse = await client.GetAsync(requestUri);
+
+        if (onHttpStatus is not null)
+        {
+            onHttpStatus(httpResponse.StatusCode);
+        }
+
+        string? responseString = await httpResponse.Content.ReadAsStringAsync();
+
+        return responseString;
+    }
+
+
+    /// <summary>
     /// POSTSs the param at the ressource in requestUri and returns a TResponse
     /// </summary>
     /// <typeparam name="TPost">The type if the object which is sent as request body (param)</typeparam>
