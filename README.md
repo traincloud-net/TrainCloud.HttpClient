@@ -22,6 +22,24 @@ Theese extensions get used in the `TrainCloud(.Tests).Application.*` and `TrainC
 [![Vulnerabilities](https://sonarqube.traincloud.net/api/project_badges/measure?project=TrainCloud.HttpClient&metric=vulnerabilities&token=sqb_2a3368bc906f3ad06a68c26889bb616d1fa59a97)](https://sonarqube.traincloud.net/dashboard?id=TrainCloud.HttpClient)
 
 ## How to use
+
+Add the TrainCloud NuGet Feed to you `nuget.config` file.
+
+```xml
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+		<packageSources>
+				<add key="TrainCloud" value="https://nuget.pkg.github.com/traincloud-net/index.json" />
+		</packageSources>
+</configuration>
+```
+
+Add `TrainCloud.HttpClient` package to the project
+
+```bash
+dotnet add package TrainCloud.HttpClient
+```
+
 Add the namespace `TrainCloud.HttpClient` to global usings
 
 **GlobalUsings.cs**
