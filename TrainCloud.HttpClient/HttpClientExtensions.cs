@@ -102,6 +102,48 @@ public static class HttpClientExtensions
         return responseString;
     }
 
+    /// <summary>
+    /// GETs a ressource in requestUri and downloads it as a file
+    /// </summary>
+    /// <param name="client">Provides a class for sending HTTP requests and receiving HTTP responses from a resource identified by a URI.</param>
+    /// <param name="requestUri">The Uri of the ressource to work with.</param>
+    /// <param name="onHttpStatus">An action, which is raised after completing the request. Contains the actual Http Status code</param>
+    /// <param name="onException">An action, which is raised after an exception occurrs</param>
+    /// <returns>The downloaded file as byte array</returns>
+    public static async Task<byte[]?> GetDownloadAsByteArrayRequestAsync(this System.Net.Http.HttpClient client,
+                                                                         string requestUri,
+                                                                         Action<HttpStatusCode>? onHttpStatus = null,
+                                                                         Action<Exception>? onException = null)
+    {
+        try
+        {
+            using HttpResponseMessage response = await client.GetAsync(requestUri);
+
+            if (onHttpStatus is not null)
+            {
+                onHttpStatus(response.StatusCode);
+            }
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return default;
+            }
+
+            var downloadBytes = await response.Content.ReadAsByteArrayAsync();
+
+            return downloadBytes;
+        }
+        catch (Exception ex)
+        {
+            if (onException is not null)
+            {
+                onException(ex);
+            }
+
+            return default;
+        }
+    }
+
 
     /// <summary>
     /// POSTSs the param at the ressource in requestUri and returns a TResponse
