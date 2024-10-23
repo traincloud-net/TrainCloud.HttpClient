@@ -129,7 +129,7 @@ public static class HttpClientExtensions
                 return default;
             }
 
-            var downloadBytes = await response.Content.ReadAsByteArrayAsync();
+            byte[] downloadBytes = await response.Content.ReadAsByteArrayAsync();
 
             return downloadBytes;
         }
