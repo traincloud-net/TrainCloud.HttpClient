@@ -27,7 +27,7 @@ public static class HttpClientExtensions
     /// <returns>The deserialized object as TResponse</returns>
     private static async Task<TResponse?> DeserializeResponseBodyAsync<TResponse>(HttpResponseMessage response)
     {
-        Stream contentStream = await response.Content.ReadAsStreamAsync();
+        using Stream contentStream = await response.Content.ReadAsStreamAsync();
 
         TResponse? model = await JsonSerializer.DeserializeAsync<TResponse>(contentStream, TrainCloudJsonSerializerOptions);
 
@@ -103,49 +103,6 @@ public static class HttpClientExtensions
     }
 
     /// <summary>
-    /// GETs a ressource in requestUri and downloads it as a file
-    /// </summary>
-    /// <param name="client">Provides a class for sending HTTP requests and receiving HTTP responses from a resource identified by a URI.</param>
-    /// <param name="requestUri">The Uri of the ressource to work with.</param>
-    /// <param name="onHttpStatus">An action, which is raised after completing the request. Contains the actual Http Status code</param>
-    /// <param name="onException">An action, which is raised after an exception occurrs</param>
-    /// <returns>The downloaded file as byte array</returns>
-    public static async Task<byte[]?> GetDownloadAsByteArrayRequestAsync(this System.Net.Http.HttpClient client,
-                                                                         string requestUri,
-                                                                         Action<HttpStatusCode>? onHttpStatus = null,
-                                                                         Action<Exception>? onException = null)
-    {
-        try
-        {
-            using HttpResponseMessage response = await client.GetAsync(requestUri);
-
-            if (onHttpStatus is not null)
-            {
-                onHttpStatus(response.StatusCode);
-            }
-
-            if (!response.IsSuccessStatusCode)
-            {
-                return default;
-            }
-
-            byte[] downloadBytes = await response.Content.ReadAsByteArrayAsync();
-
-            return downloadBytes;
-        }
-        catch (Exception ex)
-        {
-            if (onException is not null)
-            {
-                onException(ex);
-            }
-
-            return default;
-        }
-    }
-
-
-    /// <summary>
     /// POSTSs the param at the ressource in requestUri and returns a TResponse
     /// </summary>
     /// <typeparam name="TPost">The type if the object which is sent as request body (param)</typeparam>
@@ -164,7 +121,7 @@ public static class HttpClientExtensions
     {
         try
         {
-            HttpContent parameterContent = JsonContent.Create(param, typeof(TPost));
+            using HttpContent parameterContent = JsonContent.Create(param, typeof(TPost));
 
             using HttpResponseMessage response = await client.PostAsync(requestUri, parameterContent);
 
@@ -210,7 +167,7 @@ public static class HttpClientExtensions
     {
         try
         {
-            HttpContent parameterContent = JsonContent.Create(param, typeof(TPost));
+            using HttpContent parameterContent = JsonContent.Create(param, typeof(TPost));
 
             using HttpResponseMessage response = await client.PostAsync(requestUri, parameterContent);
 
@@ -247,7 +204,7 @@ public static class HttpClientExtensions
     {
         try
         {
-            HttpContent parameterContent = JsonContent.Create(param, typeof(TPatch));
+            using HttpContent parameterContent = JsonContent.Create(param, typeof(TPatch));
 
             using HttpResponseMessage response = await client.PatchAsync(requestUri, parameterContent);
 
@@ -293,7 +250,7 @@ public static class HttpClientExtensions
     {
         try
         {
-            HttpContent parameterContent = JsonContent.Create(param, typeof(TPatch));
+            using HttpContent parameterContent = JsonContent.Create(param, typeof(TPatch));
 
             using HttpResponseMessage response = await client.PatchAsync(requestUri, parameterContent);
 
@@ -330,7 +287,7 @@ public static class HttpClientExtensions
     {
         try
         {
-            HttpContent parameterContent = JsonContent.Create(param, typeof(TPut));
+            using HttpContent parameterContent = JsonContent.Create(param, typeof(TPut));
 
             using HttpResponseMessage response = await client.PutAsync(requestUri, parameterContent);
 
@@ -376,7 +333,7 @@ public static class HttpClientExtensions
     {
         try
         {
-            HttpContent parameterContent = JsonContent.Create(param, typeof(TPut));
+            using HttpContent parameterContent = JsonContent.Create(param, typeof(TPut));
 
             using HttpResponseMessage response = await client.PutAsync(requestUri, parameterContent);
 
